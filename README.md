@@ -43,9 +43,6 @@ b
 c
 d
 e
-f
-g
-h
 ```
 
 Lines 2 to 5 (exclusive)
@@ -75,9 +72,6 @@ b
 c
 d
 e
-f
-g
-h
 ```
 
 Line 1 to line 4 (inclusive)

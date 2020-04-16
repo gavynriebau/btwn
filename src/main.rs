@@ -1,14 +1,27 @@
-use argh::FromArgs;
+use structopt::StructOpt;
 use std::io::{BufReader, BufRead};
 
-#[derive(FromArgs)]
-#[argh(
-    description = "Filters lines based on the given range expression",
-    example = "'3' - line 3 only\n'2..6' - lines 2 to 6 exclusive\n'2...6' - lines 2 to 6 inclusive\n'3..' - lines 3 onwards\n'..4' - lines 1 to 4 exclusive"
+const ABOUT: &str = r#"
+Filters lines based on the given range expression.
+
+Examples:
+
+'3'       - line 3 only
+'2..6'    - lines 2 to 6 exclusive
+'2...6'   - lines 2 to 6 inclusive
+'3..'     - lines 3 onwards
+'..4'     - lines 1 to 4 exclusive
+"#;
+
+
+#[derive(StructOpt, Debug)]
+#[structopt(
+    name = "btwn",
+    about = ABOUT
 )]
 struct Arguments {
-
-    #[argh(positional)]
+    /// A range filter expression, e.g. '1..5'
+    #[structopt(short, long)]
     range: String
 }
 
@@ -65,7 +78,7 @@ fn parse_range(range: String) -> (usize, usize) {
 }
 
 fn main() {
-    let args: Arguments = argh::from_env();
+    let args = Arguments::from_args();
     let (start, end) = parse_range(args.range);
     let reader = BufReader::new(std::io::stdin());
 
