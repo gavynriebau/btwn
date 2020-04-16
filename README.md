@@ -7,8 +7,7 @@ I built this because it's easier to use than awkward `head` and `tail` combinati
 
 ```bash
 $ btwn --help
-
-btwn 0.2.0
+btwn - command line range filter tool
 
 Filters lines based on the given range expression.
 
@@ -21,14 +20,14 @@ Examples:
 '..4'     - lines 1 to 4 exclusive
 
 USAGE:
-    btwn --range <range>
+    btwn <range>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
-OPTIONS:
-    -r, --range <range>    A range filter expression, e.g. '1..5'
+ARGS:
+    <range>    A range filter expression, e.g. '1..5'
 ```
 
 ## Installation
