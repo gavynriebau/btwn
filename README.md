@@ -33,6 +33,16 @@ OPTIONS:
 
 ## Installation
 
+### From crates.io
+
+Run
+
+```bash
+$ cargo install btwn
+```
+
+### From git
+
 Clone the repo and run
 
 ```bash
