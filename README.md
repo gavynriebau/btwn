@@ -52,7 +52,7 @@ cargo install --path .
 Alternately grab a release from the github release page.
 
 
-## Examples
+## Example usage
 
 
 ```bash
