@@ -1,5 +1,10 @@
 [package]
 name = "btwn"
+description = "Command line tool to filter input based on a range expression"
+homepage = "https://github.com/gavynriebau/btwn"
+documentation = "https://github.com/gavynriebau/btwn"
+repository = "https://github.com/gavynriebau/btwn"
+readme = "https://github.com/gavynriebau/btwn/blob/master/README.md"
 version = "0.2.0"
 authors = ["Gavyn Riebau <gavyn.riebau@gmail.com>"]
 edition = "2018"
