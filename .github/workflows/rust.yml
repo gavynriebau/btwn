@@ -18,6 +18,6 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: Login
-      run: cargo login $(CRATES_API_KEY)
+      run: cargo login ${{ secrets.CRATES_API_KEY }}
     - name: Publish
       run: cargo publish
