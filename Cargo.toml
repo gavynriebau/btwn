@@ -1,6 +1,6 @@
 [package]
 name = "btwn"
-version = "0.2.1"
+version = "0.3.0"
 description = "Command line tool to filter input based on a range expression"
 homepage = "https://github.com/gavynriebau/btwn"
 documentation = "https://github.com/gavynriebau/btwn"
@@ -14,3 +14,4 @@ license = "MIT"
 
 [dependencies]
 structopt = "0.3"
+clap = "2.33.0"

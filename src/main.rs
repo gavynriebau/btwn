@@ -1,5 +1,5 @@
-use structopt::StructOpt;
 use std::io::{BufReader, BufRead};
+use clap::*;
 
 const ABOUT: &str = r#"
 Filters lines based on the given range expression.
@@ -12,18 +12,6 @@ Examples:
 '3..'     - lines 3 onwards
 '..4'     - lines 1 to 4 exclusive
 "#;
-
-
-#[derive(StructOpt, Debug)]
-#[structopt(
-    name = "btwn",
-    about = ABOUT
-)]
-struct Arguments {
-    /// A range filter expression, e.g. '1..5'
-    #[structopt(short, long)]
-    range: String
-}
 
 fn parse_inclusive_range(range: String) -> (usize, usize) {
     let parts: Vec<String> = range.split("...")
@@ -78,8 +66,14 @@ fn parse_range(range: String) -> (usize, usize) {
 }
 
 fn main() {
-    let args = Arguments::from_args();
-    let (start, end) = parse_range(args.range);
+    let matches = App::new("btwn - command line range filter tool")
+        .about(ABOUT)
+        .arg(Arg::with_name("range")
+            .help("A range filter expression, e.g. '1..5'")
+            .required(true))
+        .get_matches();
+
+    let (start, end) = parse_range(matches.value_of("range").unwrap().to_string());
     let reader = BufReader::new(std::io::stdin());
 
     for line in reader.lines().skip(start).take(end - start) {
