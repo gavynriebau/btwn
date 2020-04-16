@@ -7,30 +7,39 @@ I built this because it's easier to use than awkward `head` and `tail` combinati
 
 ```bash
 $ btwn --help
-Usage: btwn <range>
 
-Filters lines based on the given range expression
+btwn 0.2.0
 
-Options:
-  --help            display usage information
+Filters lines based on the given range expression.
 
 Examples:
-  '3' - line 3 only
-  '2..6' - lines 2 to 6 exclusive
-  '2...6' - lines 2 to 6 inclusive
-  '3..' - lines 3 onwards
-  '..4' - lines 1 to 4 exclusive
-  ```
 
-  ## Installation
+'3'       - line 3 only
+'2..6'    - lines 2 to 6 exclusive
+'2...6'   - lines 2 to 6 inclusive
+'3..'     - lines 3 onwards
+'..4'     - lines 1 to 4 exclusive
 
-  Clone the repo and run
+USAGE:
+    btwn --range <range>
 
-  ```bash
-  cargo install --path .
-  ```
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
 
-  Alternately grab a release from the github release page.
+OPTIONS:
+    -r, --range <range>    A range filter expression, e.g. '1..5'
+```
+
+## Installation
+
+Clone the repo and run
+
+```bash
+cargo install --path .
+```
+
+Alternately grab a release from the github release page.
 
 
 ## Examples
