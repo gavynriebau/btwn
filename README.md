@@ -20,11 +20,14 @@ Examples:
 '..4'     - lines 1 to 4 exclusive
 
 USAGE:
-    btwn <range>
+    btwn [OPTIONS] <range>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+
+OPTIONS:
+    -i, --input <FILE>    Input file (defaults to stdin)
 
 ARGS:
     <range>    A range filter expression, e.g. '1..5'

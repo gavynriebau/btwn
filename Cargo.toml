@@ -1,6 +1,6 @@
 [package]
 name = "btwn"
-version = "0.3.0"
+version = "0.4.0"
 description = "Command line tool to filter input based on a range expression"
 homepage = "https://github.com/gavynriebau/btwn"
 documentation = "https://github.com/gavynriebau/btwn"
