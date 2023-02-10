@@ -7,7 +7,7 @@ documentation = "https://github.com/gavynriebau/btwn"
 repository = "https://github.com/gavynriebau/btwn"
 readme = "README.md"
 authors = ["Gavyn Riebau <gavyn.riebau@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

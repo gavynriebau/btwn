@@ -1,4 +1,4 @@
-use std::io::{BufReader, BufRead};
+use std::io::{BufReader, BufRead, Write};
 use clap::*;
 use std::fs::File;
 
@@ -14,7 +14,7 @@ Examples:
 '..4'     - lines 1 to 4 exclusive
 "#;
 
-fn parse_inclusive_range(range: String) -> (usize, usize) {
+fn parse_inclusive_range(range: &str) -> (usize, usize) {
     let parts: Vec<String> = range.split("...")
         .map(|s| String::from(s))
         .collect();
@@ -24,7 +24,6 @@ fn parse_inclusive_range(range: String) -> (usize, usize) {
 
     if !parts[0].is_empty() {
         start = parts[0].parse().expect("Failed to parse range");
-        start -= 1;
     }
     if !parts[1].is_empty() {
         end = parts[1].parse().expect("Failed to parse range");
@@ -33,7 +32,7 @@ fn parse_inclusive_range(range: String) -> (usize, usize) {
     (start, end)
 }
 
-fn parse_exclusive_range(range: String) -> (usize, usize) {
+fn parse_exclusive_range(range: &str) -> (usize, usize) {
     let parts: Vec<String> = range.split("..")
         .map(|s| String::from(s))
         .collect();
@@ -43,7 +42,6 @@ fn parse_exclusive_range(range: String) -> (usize, usize) {
 
     if !parts[0].is_empty() {
         start = parts[0].parse().expect("Failed to parse range");
-        start -= 1;
     }
     if !parts[1].is_empty() {
         end = parts[1].parse().expect("Failed to parse range");
@@ -53,7 +51,7 @@ fn parse_exclusive_range(range: String) -> (usize, usize) {
     (start, end)
 }
 
-fn parse_range(range: String) -> (usize, usize) {
+fn parse_range(range: &str) -> (usize, usize) {
     if range.contains("...") {
         return parse_inclusive_range(range);
     }
@@ -64,6 +62,29 @@ fn parse_range(range: String) -> (usize, usize) {
 
     let value: usize = range.parse().expect("Failed to parse range");
     (value-1, value)
+}
+
+fn get_reader_from_filename(filename: Option<&str>) -> Box<dyn BufRead> {
+    let reader: Box<dyn BufRead> = match filename {
+        Some(filename) => Box::new(BufReader::new(File::open(filename).unwrap())),
+        None => Box::new(BufReader::new(std::io::stdin()))
+    };
+
+    reader
+}
+
+fn process_range(range_arg: &str, reader: Box<dyn BufRead>, writer: &mut dyn Write) -> std::io::Result<()> {
+    let (start, end) = parse_range(range_arg);
+
+    let text = reader.lines()
+        .skip(start - 1)
+        .take(end - start + 1)
+        .filter_map(|x| x.ok())
+        .collect::<Vec<_>>()
+        .as_slice()
+        .join("\n");
+
+    writer.write_fmt(format_args!("{}\n", text))
 }
 
 fn main() {
@@ -79,14 +100,101 @@ fn main() {
             .required(true))
         .get_matches();
 
-    let (start, end) = parse_range(matches.value_of("range").unwrap().to_string());
-    let reader: Box<dyn BufRead> = match matches.value_of("input") {
-        Some(file_name) => Box::new(BufReader::new(File::open(file_name).unwrap())),
-        None => Box::new(BufReader::new(std::io::stdin()))
-    };
+    let range_arg: &str = matches.value_of("range").unwrap();
+    let file_name: Option<&str> = matches.value_of("input");
 
-    for line in reader.lines().skip(start).take(end - start) {
-        let text = line.unwrap();
-        println!("{}", text);
+    let reader = get_reader_from_filename(file_name);
+    let mut writer: Box<dyn Write> = Box::new(std::io::stdout());
+
+    process_range(range_arg, reader, &mut writer).unwrap();
+}
+
+#[cfg(test)]
+mod tests {
+
+    mod range_parsing {
+        use crate::parse_range;
+
+        #[test]
+        fn it_parses_inclusive_ranges_correctly() {
+            let range: &str = "1...5";
+
+            let (start, end) = parse_range(range);
+
+            assert_eq!(start, 1);
+            assert_eq!(end, 5);
+        }
+
+        #[test]
+        fn it_parses_exclusive_ranges_correctly() {
+            let range: &str = "1..5";
+
+            let (start, end) = parse_range(range);
+
+            assert_eq!(start, 1);
+            assert_eq!(end, 4);
+        }
     }
+
+    mod text_printing {
+        use std::io::{Cursor, Read, BufRead, Seek, SeekFrom};
+
+        use crate::process_range;
+
+        #[test]
+        fn it_prints_inclusive_ranges_correctly() {
+            let range: &str = "2...5";
+            let reader: Box<dyn BufRead> = Box::new(r#"a
+b
+c
+d
+e
+f
+g"#.as_bytes());
+
+            let mut writer = Box::new(Cursor::new(vec![0_u8; 0]));
+
+            process_range(range, reader, &mut writer).unwrap();
+
+            let mut output = String::new();
+
+            writer.seek(SeekFrom::Start(0)).unwrap();
+            writer.read_to_string(&mut output).unwrap();
+
+            assert_eq!(output, r#"b
+c
+d
+e
+"#);
+        }
+
+        #[test]
+        fn it_prints_exclusive_ranges_correctly() {
+            let range: &str = "2..5";
+            let reader: Box<dyn BufRead> = Box::new(r#"a
+b
+c
+d
+e
+f
+g"#.as_bytes());
+
+            let mut writer = Box::new(Cursor::new(vec![0_u8; 0]));
+
+            process_range(range, reader, &mut writer).unwrap();
+
+            let mut output = String::new();
+
+            writer.seek(SeekFrom::Start(0)).unwrap();
+            writer.read_to_string(&mut output).unwrap();
+
+            assert_eq!(output, r#"b
+c
+d
+"#);
+        }
+    }
+
+    
+
 }
