@@ -7,17 +7,29 @@ on:
     branches: [ master ]
 
 jobs:
+  test:
+    steps:
+    - name: Run tests
+      run: cargo test --verbose
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+      run: cargo build --release
+  publish:
+    steps:
     - name: Login
       run: cargo login ${{ secrets.CRATES_API_KEY }}
     - name: Publish
       run: cargo publish --allow-dirty
+  release:
+    steps:
+    - name: Install cargo-cross
+      run: cargo install cross
+    - name: Build for windows
+      run: cross build --target=x86_64-pc-windows-gnu --release
+    - name: Create Github release
+      run: ./scripts/create_release.sh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
