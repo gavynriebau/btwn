@@ -18,12 +18,14 @@ jobs:
     - name: Build
       run: cargo build --release
   publish:
+    runs-on: ubuntu-latest
     steps:
     - name: Login
       run: cargo login ${{ secrets.CRATES_API_KEY }}
     - name: Publish
       run: cargo publish --allow-dirty
   release:
+    runs-on: ubuntu-latest  
     steps:
     - name: Install cargo-cross
       run: cargo install cross
