@@ -61,7 +61,7 @@ fn parse_range(range: &str) -> (usize, usize) {
     }
 
     let value: usize = range.parse().expect("Failed to parse range");
-    (value-1, value)
+    (value, value)
 }
 
 fn get_reader_from_filename(filename: Option<&str>) -> Box<dyn BufRead> {
@@ -76,9 +76,11 @@ fn get_reader_from_filename(filename: Option<&str>) -> Box<dyn BufRead> {
 fn process_range(range_arg: &str, reader: Box<dyn BufRead>, writer: &mut dyn Write) -> std::io::Result<()> {
     let (start, end) = parse_range(range_arg);
 
+    let skip = start.checked_sub(1).unwrap_or(0);
+
     let text = reader.lines()
-        .skip(start - 1)
-        .take(end - start + 1)
+        .skip(skip)
+        .take(end - skip)
         .filter_map(|x| x.ok())
         .collect::<Vec<_>>()
         .as_slice()
@@ -193,6 +195,33 @@ c
 d
 "#);
         }
+
+        #[test]
+        fn it_prints_single_line_correctly() {
+            let range: &str = "4";
+            let reader: Box<dyn BufRead> = Box::new(r#"a
+b
+c
+d
+e
+f
+g"#.as_bytes());
+
+            let mut writer = Box::new(Cursor::new(vec![0_u8; 0]));
+
+            process_range(range, reader, &mut writer).unwrap();
+
+            let mut output = String::new();
+
+            writer.seek(SeekFrom::Start(0)).unwrap();
+            writer.read_to_string(&mut output).unwrap();
+
+            assert_eq!(output, r#"d
+"#);
+        }
+
+        // TODO: Add tests for open/closed start/end ranges
+        
     }
 
     
