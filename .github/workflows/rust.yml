@@ -14,11 +14,13 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
   build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Build
       run: cargo build --release
   publish:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Login
@@ -26,6 +28,7 @@ jobs:
     - name: Publish
       run: cargo publish --allow-dirty
   release:
+    needs: build
     runs-on: ubuntu-latest  
     steps:
     - name: Install cargo-cross
