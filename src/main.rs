@@ -9,13 +9,13 @@ Examples:
 
 '3'       - line 3 only
 '2..6'    - lines 2 to 6 exclusive
-'2...6'   - lines 2 to 6 inclusive
+'2..=6'   - lines 2 to 6 inclusive
 '3..'     - lines 3 onwards
 '..4'     - lines 1 to 4 exclusive
 "#;
 
 fn parse_inclusive_range(range: &str) -> (usize, usize) {
-    let parts: Vec<String> = range.split("...")
+    let parts: Vec<String> = range.split("..=")
         .map(|s| String::from(s))
         .collect();
 
@@ -52,7 +52,7 @@ fn parse_exclusive_range(range: &str) -> (usize, usize) {
 }
 
 fn parse_range(range: &str) -> (usize, usize) {
-    if range.contains("...") {
+    if range.contains("..=") {
         return parse_inclusive_range(range);
     }
 
@@ -119,7 +119,7 @@ mod tests {
 
         #[test]
         fn it_parses_inclusive_ranges_correctly() {
-            let range: &str = "1...5";
+            let range: &str = "1..=5";
 
             let (start, end) = parse_range(range);
 
@@ -145,7 +145,7 @@ mod tests {
 
         #[test]
         fn it_prints_inclusive_ranges_correctly() {
-            let range: &str = "2...5";
+            let range: &str = "2..=5";
             let reader: Box<dyn BufRead> = Box::new(r#"a
 b
 c

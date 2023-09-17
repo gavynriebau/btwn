@@ -1,7 +1,7 @@
 
 # btwn
 
-Command line app to filter lines from stdin based on a range expression like '1...3'.
+Command line app to filter lines from stdin based on a range expression like '1..=3'.
 
 I built this because it's easier to use than awkward `head` and `tail` combinations.
 
@@ -15,7 +15,7 @@ Examples:
 
 '3'       - line 3 only
 '2..6'    - lines 2 to 6 exclusive
-'2...6'   - lines 2 to 6 inclusive
+'2..=6'   - lines 2 to 6 inclusive
 '3..'     - lines 3 onwards
 '..4'     - lines 1 to 4 exclusive
 
@@ -78,7 +78,7 @@ d
 Lines 2 to 5 (inclusive)
 
 ```bash
-$ cat test.txt | btwn 2...5
+$ cat test.txt | btwn 2..=5
 b
 c
 d
@@ -98,7 +98,7 @@ e
 Line 1 to line 4 (inclusive)
 
 ```bash
-$ cat test.txt | btwn ...4
+$ cat test.txt | btwn ..=4
 a
 b
 c
